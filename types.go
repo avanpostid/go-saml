@@ -69,6 +69,7 @@ type SignatureValue struct {
 
 type KeyInfo struct {
 	XMLName  xml.Name
+	DS       string   `xml:"xmlns:ds,attr"`
 	X509Data X509Data `xml:",innerxml"`
 }
 
@@ -119,16 +120,24 @@ type Transform struct {
 	Algorithm string `xml:"Algorithm,attr"`
 }
 
-type EntityDescriptor struct {
+type SPEntityDescriptor struct {
 	XMLName  xml.Name
 	DS       string `xml:"xmlns:ds,attr"`
 	XMLNS    string `xml:"xmlns,attr"`
 	MD       string `xml:"xmlns:md,attr"`
 	EntityId string `xml:"entityID,attr"`
 
-	Extensions       *Extensions       `xml:"Extensions,omitempty"`
-	SPSSODescriptor  *SPSSODescriptor  `xml:"SPSSODescriptor,omitempty"`
-	IDPSSODescriptor *IDPSSODescriptor `xml:"IDPSSODescriptor,omitempty"`
+	Extensions      Extensions      `xml:"Extensions"`
+	SPSSODescriptor SPSSODescriptor `xml:"SPSSODescriptor"`
+}
+
+type IDPEntityDescriptor struct {
+	XMLName  xml.Name
+	XMLNS    string `xml:"xmlns,attr"`
+	MD       string `xml:"xmlns:md,attr"`
+	EntityId string `xml:"entityID,attr"`
+
+	IDPSSODescriptor IDPSSODescriptor `xml:"IDPSSODescriptor"`
 }
 
 type Extensions struct {
@@ -152,10 +161,11 @@ type SPSSODescriptor struct {
 type IDPSSODescriptor struct {
 	XMLName                    xml.Name
 	ProtocolSupportEnumeration string `xml:"protocolSupportEnumeration,attr"`
+	WantAuthnRequestsSigned    string `xml:"WantAuthnRequestsSigned,attr"`
 	SigningKeyDescriptor       KeyDescriptor
 	EncryptionKeyDescriptor    KeyDescriptor
-	SingleSignOnService        SingleSignOnService `xml:"SingleSignOnService"`
 	SingleLogoutService        SingleLogoutService `xml:"SingleLogoutService"`
+	SingleSignOnService        SingleSignOnService `xml:"SingleSignOnService"`
 }
 
 type EntityAttributes struct {

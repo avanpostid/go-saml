@@ -6,7 +6,7 @@ import (
 )
 
 func (s *ServiceProviderSettings) GetEntityDescriptor() (string, error) {
-	d := EntityDescriptor{
+	d := SPEntityDescriptor{
 		XMLName: xml.Name{
 			Local: "md:EntityDescriptor",
 		},
@@ -15,7 +15,7 @@ func (s *ServiceProviderSettings) GetEntityDescriptor() (string, error) {
 		MD:       "urn:oasis:names:tc:SAML:2.0:metadata",
 		EntityId: s.AssertionConsumerServiceURL,
 
-		Extensions: &Extensions{
+		Extensions: Extensions{
 			XMLName: xml.Name{
 				Local: "md:Extensions",
 			},
@@ -23,7 +23,7 @@ func (s *ServiceProviderSettings) GetEntityDescriptor() (string, error) {
 			MDAttr: "urn:oasis:names:tc:SAML:metadata:attribute",
 			MDRPI:  "urn:oasis:names:tc:SAML:metadata:rpi",
 		},
-		SPSSODescriptor: &SPSSODescriptor{
+		SPSSODescriptor: SPSSODescriptor{
 			ProtocolSupportEnumeration: "urn:oasis:names:tc:SAML:2.0:protocol",
 			SigningKeyDescriptor: KeyDescriptor{
 				XMLName: xml.Name{
@@ -108,25 +108,17 @@ func (s *ServiceProviderSettings) GetEntityDescriptor() (string, error) {
 }
 
 func (i *IdentityProviderSettings) GetIdpEntityDescriptor() (string, error) {
-	d := EntityDescriptor{
+	d := IDPEntityDescriptor{
 		XMLName: xml.Name{
 			Local: "md:EntityDescriptor",
 		},
-		DS:       "http://www.w3.org/2000/09/xmldsig#",
 		XMLNS:    "urn:oasis:names:tc:SAML:2.0:metadata",
 		MD:       "urn:oasis:names:tc:SAML:2.0:metadata",
 		EntityId: i.IdpEntityID,
 
-		/* Extensions: Extensions{
-			XMLName: xml.Name{
-				Local: "md:Extensions",
-			},
-			Alg:    "urn:oasis:names:tc:SAML:metadata:algsupport",
-			MDAttr: "urn:oasis:names:tc:SAML:metadata:attribute",
-			MDRPI:  "urn:oasis:names:tc:SAML:metadata:rpi",
-		}, */
-		IDPSSODescriptor: &IDPSSODescriptor{
+		IDPSSODescriptor: IDPSSODescriptor{
 			ProtocolSupportEnumeration: "urn:oasis:names:tc:SAML:2.0:protocol",
+			WantAuthnRequestsSigned:    i.WantAuthnRequestsSigned,
 			SigningKeyDescriptor: KeyDescriptor{
 				XMLName: xml.Name{
 					Local: "md:KeyDescriptor",
@@ -137,6 +129,7 @@ func (i *IdentityProviderSettings) GetIdpEntityDescriptor() (string, error) {
 					XMLName: xml.Name{
 						Local: "ds:KeyInfo",
 					},
+					DS: "http://www.w3.org/2000/09/xmldsig#",
 					X509Data: X509Data{
 						XMLName: xml.Name{
 							Local: "ds:X509Data",
@@ -160,6 +153,7 @@ func (i *IdentityProviderSettings) GetIdpEntityDescriptor() (string, error) {
 					XMLName: xml.Name{
 						Local: "ds:KeyInfo",
 					},
+					DS: "http://www.w3.org/2000/09/xmldsig#",
 					X509Data: X509Data{
 						XMLName: xml.Name{
 							Local: "ds:X509Data",
@@ -173,13 +167,6 @@ func (i *IdentityProviderSettings) GetIdpEntityDescriptor() (string, error) {
 					},
 				},
 			},
-			SingleSignOnService: SingleSignOnService{
-				XMLName: xml.Name{
-					Local: "md:SingleSignOnService",
-				},
-				Binding:  "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
-				Location: i.IDPSSOURL,
-			},
 			SingleLogoutService: SingleLogoutService{
 				XMLName: xml.Name{
 					Local: "md:SingleLogoutService",
@@ -187,24 +174,13 @@ func (i *IdentityProviderSettings) GetIdpEntityDescriptor() (string, error) {
 				Binding:  "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
 				Location: i.IDPSLURL,
 			},
-			/* AssertionConsumerServices: []AssertionConsumerService{
-				{
-					XMLName: xml.Name{
-						Local: "md:AssertionConsumerService",
-					},
-					Binding:  "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-					Location: s.AssertionConsumerServiceURL,
-					Index:    "0",
+			SingleSignOnService: SingleSignOnService{
+				XMLName: xml.Name{
+					Local: "md:SingleSignOnService",
 				},
-				{
-					XMLName: xml.Name{
-						Local: "md:AssertionConsumerService",
-					},
-					Binding:  "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact",
-					Location: s.AssertionConsumerServiceURL,
-					Index:    "1",
-				},
-			}, */
+				Binding:  "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+				Location: i.IDPSSOURL,
+			},
 		},
 	}
 	b, err := xml.MarshalIndent(d, "", "    ")

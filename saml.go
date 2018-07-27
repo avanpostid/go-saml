@@ -22,10 +22,11 @@ type ServiceProviderSettings struct {
 
 // IdentityProviderSettings provides settings to configure server acting as a SAML Identity Provider.
 type IdentityProviderSettings struct {
-	PublicCertPath string
-	IDPSSOURL      string
-	IDPSLURL       string
-	IdpEntityID    string
+	PublicCertPath          string
+	IDPSSOURL               string
+	IDPSLURL                string
+	IdpEntityID             string
+	WantAuthnRequestsSigned string
 
 	hasInit    bool
 	publicCert string
