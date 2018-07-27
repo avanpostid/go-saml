@@ -20,7 +20,15 @@ type ServiceProviderSettings struct {
 	iDPPublicCert string
 }
 
+// IdentityProviderSettings provides settings to configure server acting as a SAML Identity Provider.
 type IdentityProviderSettings struct {
+	PublicCertPath string
+	IDPSSOURL      string
+	IDPSLURL       string
+	IdpEntityID    string
+
+	hasInit    bool
+	publicCert string
 }
 
 func (s *ServiceProviderSettings) Init() (err error) {
@@ -68,4 +76,25 @@ func (s *ServiceProviderSettings) IDPPublicCert() string {
 		panic("Must call ServiceProviderSettings.Init() first")
 	}
 	return s.iDPPublicCert
+}
+
+func (i *IdentityProviderSettings) Init() (err error) {
+	if i.hasInit {
+		return nil
+	}
+	i.hasInit = true
+
+	i.publicCert, err = util.LoadCertificate(i.PublicCertPath)
+	if err != nil {
+		panic(err)
+	}
+
+	return nil
+}
+
+func (i *IdentityProviderSettings) PublicCert() string {
+	if !i.hasInit {
+		panic("Must call IdentityProviderSettings.Init() first")
+	}
+	return i.publicCert
 }

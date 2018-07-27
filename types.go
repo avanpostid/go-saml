@@ -126,8 +126,9 @@ type EntityDescriptor struct {
 	MD       string `xml:"xmlns:md,attr"`
 	EntityId string `xml:"entityID,attr"`
 
-	Extensions      Extensions      `xml:"Extensions"`
-	SPSSODescriptor SPSSODescriptor `xml:"SPSSODescriptor"`
+	Extensions       *Extensions       `xml:"Extensions,omitempty"`
+	SPSSODescriptor  *SPSSODescriptor  `xml:"SPSSODescriptor,omitempty"`
+	IDPSSODescriptor *IDPSSODescriptor `xml:"IDPSSODescriptor,omitempty"`
 }
 
 type Extensions struct {
@@ -148,6 +149,15 @@ type SPSSODescriptor struct {
 	AssertionConsumerServices []AssertionConsumerService
 }
 
+type IDPSSODescriptor struct {
+	XMLName                    xml.Name
+	ProtocolSupportEnumeration string `xml:"protocolSupportEnumeration,attr"`
+	SigningKeyDescriptor       KeyDescriptor
+	EncryptionKeyDescriptor    KeyDescriptor
+	SingleSignOnService        SingleSignOnService `xml:"SingleSignOnService"`
+	SingleLogoutService        SingleLogoutService `xml:"SingleLogoutService"`
+}
+
 type EntityAttributes struct {
 	XMLName xml.Name
 	SAML    string `xml:"xmlns:saml,attr"`
@@ -165,6 +175,13 @@ type KeyDescriptor struct {
 }
 
 type SingleLogoutService struct {
+	XMLName  xml.Name
+	Binding  string `xml:"Binding,attr"`
+	Location string `xml:"Location,attr"`
+}
+
+type SingleSignOnService struct {
+	XMLName  xml.Name
 	Binding  string `xml:"Binding,attr"`
 	Location string `xml:"Location,attr"`
 }
