@@ -123,7 +123,7 @@ func NewSignedResponse() *Response {
 					XMLName: xml.Name{
 						Local: "samlsig:CanonicalizationMethod",
 					},
-					Algorithm: "http://www.w3.org/TR/2001/REC-xml-c14n-20010315",
+					Algorithm: "http://www.w3.org/2001/10/xml-exc-c14n#",
 				},
 				SignatureMethod: SignatureMethod{
 					XMLName: xml.Name{
