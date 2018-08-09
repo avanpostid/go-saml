@@ -17,17 +17,17 @@ const (
 // `privateKeyPath` must be a path on the filesystem, xmlsec1 is run out of process
 // through `exec`
 func SignRequest(xml string, privateKeyPath string) (string, error) {
-	return sign(xml, privateKeyPath, xmlRequestID)
+	return sign(xml, privateKeyPath, xmlRequestID, "")
 }
 
 // SignResponse sign a SAML 2.0 Response
 // `privateKeyPath` must be a path on the filesystem, xmlsec1 is run out of process
 // through `exec`
-func SignResponse(xml string, privateKeyPath string) (string, error) {
-	return sign(xml, privateKeyPath, xmlResponseID)
+func SignResponse(xml string, privateKeyPath string, publicCertPath string) (string, error) {
+	return sign(xml, privateKeyPath, xmlResponseID, publicCertPath)
 }
 
-func sign(xml string, privateKeyPath string, id string) (string, error) {
+func sign(xml string, privateKeyPath string, id string, publicCertPath string) (string, error) {
 
 	samlXmlsecInput, err := ioutil.TempFile(os.TempDir(), "tmpgs")
 	if err != nil {
@@ -48,7 +48,8 @@ func sign(xml string, privateKeyPath string, id string) (string, error) {
 	// fmt.Println("xmlsec1", "--sign", "--privkey-pem", privateKeyPath,
 	// 	"--id-attr:ID", id,
 	// 	"--output", samlXmlsecOutput.Name(), samlXmlsecInput.Name())
-	output, err := exec.Command("xmlsec1", "--sign", "--privkey-pem", privateKeyPath,
+	privPubPath := privateKeyPath + "," + publicCertPath
+	output, err := exec.Command("xmlsec1", "--sign", "--privkey-pem", privPubPath,
 		"--id-attr:ID", id,
 		"--output", samlXmlsecOutput.Name(), samlXmlsecInput.Name()).CombinedOutput()
 	if err != nil {

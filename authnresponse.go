@@ -140,12 +140,19 @@ func NewSignedResponse() *Response {
 						XMLName: xml.Name{
 							Local: "samlsig:Transforms",
 						},
-						Transform: []Transform{Transform{
-							XMLName: xml.Name{
-								Local: "samlsig:Transform",
+						Transform: []Transform{
+							Transform{
+								XMLName: xml.Name{
+									Local: "samlsig:Transform",
+								},
+								Algorithm: "http://www.w3.org/2000/09/xmldsig#enveloped-signature",
 							},
-							Algorithm: "http://www.w3.org/2000/09/xmldsig#enveloped-signature",
-						}},
+							Transform{
+								XMLName: xml.Name{
+									Local: "samlsig:Transform",
+								},
+								Algorithm: "http://www.w3.org/2001/10/xml-exc-c14n#",
+							}},
 					},
 					DigestMethod: DigestMethod{
 						XMLName: xml.Name{
@@ -320,17 +327,17 @@ func (r *Response) String() (string, error) {
 	return string(b), nil
 }
 
-func (r *Response) SignedString(privateKeyPath string) (string, error) {
+func (r *Response) SignedString(privateKeyPath string, publicCertPath string) (string, error) {
 	s, err := r.String()
 	if err != nil {
 		return "", err
 	}
 
-	return SignResponse(s, privateKeyPath)
+	return SignResponse(s, privateKeyPath, publicCertPath)
 }
 
-func (r *Response) EncodedSignedString(privateKeyPath string) (string, error) {
-	signed, err := r.SignedString(privateKeyPath)
+func (r *Response) EncodedSignedString(privateKeyPath string, publicCertPath string) (string, error) {
+	signed, err := r.SignedString(privateKeyPath, publicCertPath)
 	if err != nil {
 		return "", err
 	}
@@ -339,7 +346,7 @@ func (r *Response) EncodedSignedString(privateKeyPath string) (string, error) {
 }
 
 func (r *Response) CompressedEncodedSignedString(privateKeyPath string) (string, error) {
-	signed, err := r.SignedString(privateKeyPath)
+	signed, err := r.SignedString(privateKeyPath, "")
 	if err != nil {
 		return "", err
 	}
