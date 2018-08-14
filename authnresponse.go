@@ -252,6 +252,23 @@ func NewSignedResponse() *Response {
 				NotOnOrAfter:         time.Now().Add(time.Minute * 5).UTC().Format(time.RFC3339Nano),
 				AudienceRestrictions: []AudienceRestriction{},
 			},
+			AuthnStatements: []AuthnStatement{{
+				XMLName: xml.Name{
+					Local: "saml:AuthnStatement",
+				},
+				AuthnInstant: time.Now().UTC().Format(time.RFC3339Nano),
+				AuthnContext: AuthnContext{
+					XMLName: xml.Name{
+						Local: "saml:AuthnContext",
+					},
+					AuthnContextClassRef: AuthnContextClassRef{
+						XMLName: xml.Name{
+							Local: "saml:AuthnContextClassRef",
+						},
+						Transport: "urn:oasis:names:tc:SAML:2.0:ac:classes:Password",
+					},
+				},
+			}},
 			AttributeStatement: AttributeStatement{
 				XMLName: xml.Name{
 					Local: "saml:AttributeStatement",
