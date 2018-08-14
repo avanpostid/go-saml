@@ -225,7 +225,7 @@ func NewSignedResponse() *Response {
 					XMLName: xml.Name{
 						Local: "saml:NameID",
 					},
-					Format:          "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+					Format:          "",
 					Value:           "",
 					SPNameQualifier: "",
 				},

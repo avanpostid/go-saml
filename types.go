@@ -280,7 +280,7 @@ type SubjectConfirmationData struct {
 
 type NameID struct {
 	XMLName         xml.Name
-	Format          string `xml:",attr"`
+	Format          string `xml:",attr,omitempty"`
 	SPNameQualifier string `xml:",attr,omitempty"`
 	Value           string `xml:",innerxml"`
 }
